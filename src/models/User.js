@@ -17,34 +17,38 @@ sequelize
     console.error("Unable to connect to DB:", err);
   });
 
-// const User = sequelize.define("users", {
-//   username: {
-//     type: sequelize.STRING,
-//     allowNull: false
-//   },
-//   email: {
-//     type: sequelize.STRING,
-//     allowNull: false,
-//     isEmail(value) {
-//       if (!validator.isEmail(value)) {
-//         throw new Error({ error: "Invalid Email address" });
-//       }
-//     }
-//   },
-//   password: {
-//     type: sequelize.STRING,
-//     allowNull: false
-//   },
-//   token: {
-//     type: sequelize.STRING,
-//     allowNull: false
-//   }
-// });
+const User = sequelize.define("users", {
+  username: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    isEmail(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error({ error: "Invalid Email address" });
+      }
+    }
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  token: {
+    type: Sequelize.STRING,
+    allowNull: false
+  }
+});
 
-// User.beforeCreate((user, options) => {
-//   return async function hashPsw(user) {
-//     user.password = await bcrypt.hash(user.password, 8)
-//   }
-// })
+User.beforeCreate((user, options) => {
+  return async function hashPsw(user) {
+    user.password = await bcrypt.hash(user.password, 8)
+  }
+})
 
-module.exports = sequelize
+User.sync()
+  .then(() => console.log('Users table created successfully'))
+  .catch(err => console.log(`Error connecting to DB: ${err}`));
+
+module.exports = User
